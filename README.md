@@ -9,3 +9,7 @@
 ### DeleteUser : 
 >Validation :
 >> if not exists no action
+### GetUsers : 
+### GetSingleUser:
+>Validation :
+>> if not exists then get exception

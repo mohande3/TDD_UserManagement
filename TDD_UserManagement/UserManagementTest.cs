@@ -73,5 +73,73 @@ namespace TDD_UserManagement
             userResult.Phone.Should().Be(userExpect.Phone);
             userResult.Name.Should().Be(userExpect.Name);
         }
+
+
+        [Fact]
+        public void When_delete_exist_user_Expect_success()
+        {
+            //! Arrange
+            var userExpect = new User { Name = "ALI", Phone = "099" };
+            var countBeforeDelete = _sut.GetCount();
+            _sut.AddNewUser(userExpect);
+
+            //! Act
+            _sut.DeleteUser("099");
+
+            //! Assertion
+            _sut.GetCount().Should().Be(countBeforeDelete - 1);
+        }
+
+        [Fact]
+        public void When_delete_not_exist_user_Expect_success()
+        {
+            //! Arrange
+
+            //! Act
+            _sut.DeleteUser("099");
+
+            //! Assertion
+            _sut.GetCount().Should().Be(0);
+        }
+
+        [Fact]
+        public void When_update_not_exist_user_Expect_get_exception()
+        {
+            //! Arrange
+
+            //! Act
+            var act = () => _sut.UpdateUser(new User { Name = "Ali", Phone = "098" });
+
+            //! Assertion
+            act.Should().Throw<NotExistUserException>();
+        }
+
+        [Fact]
+        public void When_update_with_empty_phone_Expect_get_exception()
+        {
+            //! Arrange
+
+            //! Act
+            var act = () => _sut.UpdateUser(new User { Name = "Ali", Phone = "" });
+
+            //! Assertion
+            act.Should().Throw<NotValidaUserForAddException>();
+        }
+
+        [Fact]
+        public void When_update_with_exist_user_Expect_change_it()
+        {
+            //! Arrange
+            var user = new User { Name = "Ali", Phone = "98" };
+            _sut.AddNewUser(user);
+
+            //! Act
+            var user2 = new User { Name = "VAHID", Phone = "98" };
+            _sut.UpdateUser(user2);
+
+            //! Assertion
+            var newUser = _sut.GetSingleUser(user.Phone);
+            newUser.Name.Should().Be(user2.Name);
+        }
     }
 }

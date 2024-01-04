@@ -1,4 +1,6 @@
 ﻿
+
+
 namespace TDD_UserManagement
 {
     internal class UserManagement
@@ -33,6 +35,27 @@ namespace TDD_UserManagement
             if (user == null)
                 throw new NotExistUserException($"User that not exist");
             return user;
+        }
+
+        internal void DeleteUser(string phone)
+        {
+            var item = FindByPhone(phone);
+            _users.Remove(item);
+        }
+
+        internal void UpdateUser(User user)
+        {
+            (bool isValid, string error) isValidation =
+                _userValidator.IsValidationUserForAdd(user);
+
+            if (!isValidation.isValid)
+                throw new NotValidaUserForAddException("");
+
+            var entity = FindByPhone(user.Phone);
+            if (entity == null)
+                throw new NotExistUserException("");
+
+            entity.Name = user.Name;
         }
     }
 }

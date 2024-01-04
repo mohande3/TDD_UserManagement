@@ -5,19 +5,34 @@ namespace TDD_UserManagement
     {
 
         internal static List<User> _users = new List<User>();
+        private UserValidator _userValidator;
+
+        User? FindByPhone(string phone) => _users.Where(x => x.Phone == phone).FirstOrDefault();
+
 
         public UserManagement()
         {
+            _userValidator = new UserValidator();
         }
 
         public int GetCount() => _users.Count;
         public void AddNewUser(User user)
         {
-            if (string.IsNullOrWhiteSpace(user.Name))
-                throw new Exception($"{nameof(User.Name)} can not be null or empty");
-            if (string.IsNullOrWhiteSpace(user.Phone))
-                throw new Exception($"{nameof(User.Phone)} can not be null or empty");
+
+            (bool isValid, string error) isValidation =
+                _userValidator.IsValidationUserForAdd(user);
+
+            if (!isValidation.isValid)
+                throw new NotValidaUserForAddException(isValidation.error);
             _users.Add(user);
+        }
+
+        internal User? GetSingleUser(string phone)
+        {
+            var user = FindByPhone(phone);
+            if (user == null)
+                throw new NotExistUserException($"User that not exist");
+            return user;
         }
     }
 }
